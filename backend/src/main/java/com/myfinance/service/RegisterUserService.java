@@ -45,4 +45,11 @@ public class RegisterUserService {
   public void deleteUser(Long id) {
     registerUserDao.deleteById(id);
   }
+
+  public boolean authenticate(String username, String password) {
+    return registerUserDao
+        .findByUsername(username)
+        .filter(user -> user.getPassword().equals(password))
+        .isPresent();
+  }
 }

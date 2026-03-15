@@ -8,13 +8,29 @@ const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here (e.g., API call)
-    console.log("Login attempt:", { username, password });
-    // For demo purposes, navigate to dashboard on any login
-    navigate("/dashboard");
+    setError(null);
+
+    try {
+      const response = await fetch("http://localhost:8080/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const responseText = await response.text();
+
+      if (response.ok) {
+        navigate("/dashboard");
+      } else {
+        setError(responseText || "Invalid username or password");
+      }
+    } catch (err) {
+      setError("Unable to reach server. Please try again.");
+    }
   };
 
   return (
@@ -43,6 +59,11 @@ const Login = () => {
                 />
                 <Submit text="Login" />
               </form>
+              {error && (
+                <div className="alert alert-danger mt-3" role="alert">
+                  {error}
+                </div>
+              )}
               <div className="text-center mt-3">
                 <a href="#" className="text-decoration-none me-3">
                   Forgot Password?

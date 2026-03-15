@@ -1,14 +1,18 @@
 package com.myfinance.controller;
 
+import com.myfinance.model.LoginRequest;
 import com.myfinance.model.RegisterUser;
 import com.myfinance.service.RegisterUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/users")
 public class RegisterUserController {
@@ -24,6 +28,23 @@ public class RegisterUserController {
     } catch (RuntimeException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<?> login(
+      @Valid @RequestBody LoginRequest request,
+      BindingResult result) {
+
+    if (result.hasErrors()) {
+      return ResponseEntity
+          .badRequest()
+          .body(result.getAllErrors().get(0).getDefaultMessage());
+    }
+    boolean authenticated = registerUserService.authenticate(request.getUsername(), request.getPassword());
+    if (authenticated) {
+      return ResponseEntity.ok().build();
+    }
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
   }
 
   @GetMapping
