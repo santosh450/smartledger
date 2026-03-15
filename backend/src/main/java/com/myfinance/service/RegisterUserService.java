@@ -1,9 +1,8 @@
-package com.yourapp.service;
+package com.myfinance.service;
 
-import com.yourapp.model.RegisterUser;
-import com.yourapp.repository.RegisterUserDao;
+import com.myfinance.model.RegisterUser;
+import com.myfinance.repository.RegisterUserDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +14,6 @@ public class RegisterUserService {
   @Autowired
   private RegisterUserDao registerUserDao;
 
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
   public RegisterUser registerUser(RegisterUser user) {
     // Check if username or email already exists
     if (registerUserDao.existsByUsername(user.getUsername())) {
@@ -27,14 +23,7 @@ public class RegisterUserService {
       throw new RuntimeException("Email already exists");
     }
 
-    // Encode password
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-
     return registerUserDao.save(user);
-  }
-
-  public Optional<RegisterUser> findByUsername(String username) {
-    return registerUserDao.findByUsername(username);
   }
 
   public Optional<RegisterUser> findByEmail(String email) {

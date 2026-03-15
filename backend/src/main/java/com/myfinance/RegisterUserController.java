@@ -1,7 +1,7 @@
-package com.yourapp.controller;
+package com.myfinance.controller;
 
-import com.yourapp.model.RegisterUser;
-import com.yourapp.service.RegisterUserService;
+import com.myfinance.model.RegisterUser;
+import com.myfinance.service.RegisterUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3000") // Allow frontend
 public class RegisterUserController {
 
   @Autowired

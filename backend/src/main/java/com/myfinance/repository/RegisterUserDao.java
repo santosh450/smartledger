@@ -1,6 +1,6 @@
-package com.yourapp.repository;
+package com.myfinance.repository;
 
-import com.yourapp.model.RegisterUser;
+import com.myfinance.model.RegisterUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

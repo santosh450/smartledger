@@ -1,4 +1,4 @@
-package com.yourapp.model;
+package com.myfinance.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
