@@ -52,4 +52,8 @@ public class RegisterUserService {
         .filter(user -> user.getPassword().equals(password))
         .isPresent();
   }
+
+  public boolean isUserRegistered(String phoneOrEmail) {
+    return registerUserDao.existsByEmail(phoneOrEmail.toLowerCase()) || registerUserDao.existsByPhone(phoneOrEmail);
+  }
 }

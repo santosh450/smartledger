@@ -13,7 +13,11 @@ public interface RegisterUserDao extends JpaRepository<RegisterUser, Long> {
 
   Optional<RegisterUser> findByEmail(String email);
 
+  Optional<RegisterUser> findByPhone(String phone);
+
   boolean existsByUsername(String username);
 
   boolean existsByEmail(String email);
+
+  boolean existsByPhone(String phone);
 }

@@ -1,6 +1,7 @@
 package com.myfinance.controller;
 
 import com.myfinance.model.LoginRequest;
+import com.myfinance.model.ForgotPasswordRequest;
 import com.myfinance.model.RegisterUser;
 import com.myfinance.service.RegisterUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,29 @@ public class RegisterUserController {
       return ResponseEntity.ok().build();
     }
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+  }
+
+  @PostMapping("/forgot-password")
+  public ResponseEntity<?> forgotPassword(
+      @Valid @RequestBody ForgotPasswordRequest request,
+      BindingResult result) {
+
+    if (result.hasErrors()) {
+      return ResponseEntity
+          .badRequest()
+          .body(result.getAllErrors().get(0).getDefaultMessage());
+    }
+
+    boolean accountExists = registerUserService
+        .isUserRegistered(request.getEmailOrPhone());
+
+    if (accountExists) {
+      return ResponseEntity.ok("Password sent successfully.");
+    }
+
+    return ResponseEntity
+        .status(HttpStatus.NOT_FOUND)
+        .body("No account found with provided email or phone.");
   }
 
   @GetMapping
