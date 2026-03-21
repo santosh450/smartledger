@@ -13,9 +13,13 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSuccessMessage(null);
+    setErrorMessage(null);
 
     // Basic validation
     if (password !== confirmPassword) {
@@ -48,6 +52,36 @@ const Register = () => {
       return;
     }
 
+    try {
+      const response = await fetch("http://localhost:8080/api/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          username,
+          password,
+          email,
+          phone,
+        }),
+      });
+
+      const responseText = await response.text();
+
+      if (response.ok) {
+        setSuccessMessage("Registration successful! Redirecting to login...");
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
+      } else {
+        setErrorMessage(
+          responseText || "Registration failed. Please try again.",
+        );
+      }
+    } catch {
+      setErrorMessage("Unable to reach server. Please try again.");
+    }
+
     // Handle registration logic here (e.g., API call)
     console.log("Registration attempt:", {
       firstName,
@@ -57,8 +91,6 @@ const Register = () => {
       email,
       phone,
     });
-    alert("Registration successful!");
-    navigate("/");
   };
 
   return (
@@ -133,6 +165,16 @@ const Register = () => {
                 />
                 <Submit text="Register" />
               </form>
+              {errorMessage && (
+                <div className="alert alert-danger mt-3" role="alert">
+                  {errorMessage}
+                </div>
+              )}
+              {successMessage && (
+                <div className="alert alert-success mt-3" role="alert">
+                  {successMessage}
+                </div>
+              )}
               <div className="text-center mt-3">
                 <Link text="Already have an account? Login" to="/" />
               </div>
