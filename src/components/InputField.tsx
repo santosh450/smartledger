@@ -29,7 +29,7 @@ const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <div className="mb-3">
-      <label htmlFor={id} className="form-label">
+      <label htmlFor={id} className="form-label d-block text-start">
         {label}
         {required && <span className="text-danger"> *</span>}
       </label>
@@ -46,7 +46,7 @@ const InputField: React.FC<InputFieldProps> = ({
         aria-describedby={helpId}
       />
       {helpText && (
-        <div id={helpId} className="form-text">
+        <div id={helpId} className="form-text text-start">
           {helpText}
         </div>
       )}

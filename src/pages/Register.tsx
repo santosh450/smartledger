@@ -129,7 +129,7 @@ const Register = () => {
                   required
                   pattern="[1-9][0-9]{9}"
                   maxLength={10}
-                  helpText="Enter a 10-digit number; cannot start with 0."
+                  helpText="Enter a 10-digit number; can't start with 0."
                 />
                 <Submit text="Register" />
               </form>

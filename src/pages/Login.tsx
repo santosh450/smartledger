@@ -28,15 +28,15 @@ const Login = () => {
       } else {
         setError(responseText || "Invalid username or password");
       }
-    } catch (err) {
+    } catch {
       setError("Unable to reach server. Please try again.");
     }
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
+    <div className="container min-vh-100 d-flex align-items-center justify-content-center">
+      <div className="row justify-content-center w-100">
+        <div className="col-12 col-md-8 col-lg-6">
           <div className="card">
             <div className="card-body">
               <h2 className="card-title text-center">Login</h2>
@@ -65,9 +65,11 @@ const Login = () => {
                 </div>
               )}
               <div className="text-center mt-3">
-                <a href="#" className="text-decoration-none me-3">
-                  Forgot Password?
-                </a>
+                <Link
+                  text="Forgot Password?"
+                  to="/forgot-password"
+                  className="me-3"
+                />
                 <Link text="Register" to="/register" />
               </div>
             </div>
