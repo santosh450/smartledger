@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Submit from "../components/Submit";
-import InputField from "../components/InputField";
-import Link from "../components/Link";
+import Submit from "../../components/Submit";
+import InputField from "../../components/InputField";
+import Link from "../../components/Link";
+import { userApi } from "../../utils/apiService";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -53,33 +54,25 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          username,
-          password,
-          email,
-          phone,
-        }),
+      await userApi.register({
+        firstName,
+        lastName,
+        username,
+        password,
+        email,
+        phone,
       });
 
-      const responseText = await response.text();
-
-      if (response.ok) {
-        setSuccessMessage("Registration successful! Redirecting to login...");
-        setTimeout(() => {
-          navigate("/");
-        }, 3000);
+      setSuccessMessage("Registration successful! Redirecting to login...");
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+    } catch (err) {
+      if (err instanceof Error) {
+        setErrorMessage(err.message || "Registration failed. Please try again.");
       } else {
-        setErrorMessage(
-          responseText || "Registration failed. Please try again.",
-        );
+        setErrorMessage("Unable to reach server. Please try again.");
       }
-    } catch {
-      setErrorMessage("Unable to reach server. Please try again.");
     }
 
     // Handle registration logic here (e.g., API call)

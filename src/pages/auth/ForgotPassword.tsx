@@ -1,7 +1,8 @@
 import { useState } from "react";
-import InputField from "../components/InputField";
-import Submit from "../components/Submit";
-import Link from "../components/Link";
+import InputField from "../../components/InputField";
+import Submit from "../../components/Submit";
+import Link from "../../components/Link";
+import { userApi } from "../../utils/apiService";
 
 const ForgotPassword = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
@@ -22,27 +23,16 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/users/forgot-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ emailOrPhone }),
-        },
+      const responseText = await userApi.forgotPassword({ emailOrPhone });
+      setSuccessMessage(
+        responseText || "If an account exists, password reset details will be sent.",
       );
-
-      const responseText = await response.text();
-
-      if (response.ok) {
-        setSuccessMessage(
-          responseText ||
-            "If an account exists, password reset details will be sent.",
-        );
+    } catch (err) {
+      if (err instanceof Error) {
+        setErrorMessage(err.message || "Unable to process request.");
       } else {
-        setErrorMessage(responseText || "Unable to process request.");
+        setErrorMessage("Unable to reach server. Please try again.");
       }
-    } catch {
-      setErrorMessage("Unable to reach server. Please try again.");
     }
   };
 

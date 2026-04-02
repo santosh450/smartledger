@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Submit from "../components/Submit";
-import InputField from "../components/InputField";
-import Link from "../components/Link";
+import Submit from "../../components/Submit";
+import InputField from "../../components/InputField";
+import Link from "../../components/Link";
+import { userApi } from "../../utils/apiService";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,21 +16,14 @@ const Login = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const responseText = await response.text();
-
-      if (response.ok) {
-        navigate("/dashboard");
+      await userApi.login({ username, password });
+      navigate("/dashboard");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || "Invalid username or password");
       } else {
-        setError(responseText || "Invalid username or password");
+        setError("Unable to reach server. Please try again.");
       }
-    } catch {
-      setError("Unable to reach server. Please try again.");
     }
   };
 
@@ -39,7 +33,8 @@ const Login = () => {
         <div className="col-12 col-md-8 col-lg-6">
           <div className="card">
             <div className="card-body">
-              <h2 className="card-title text-center">Login</h2>
+              <h2 className="card-title text-start">Here you can Login</h2>
+              <p className="card-title text-start">Let's join us</p>
               <form onSubmit={handleSubmit}>
                 <InputField
                   label="Username"
