@@ -1,35 +1,39 @@
 package com.myfinance.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "debt_credit")
 public class DebtCredit {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private LocalDate date;
+    private LocalDate date;
 
-  private String person;
+    @NotBlank
+    private String person;
 
-  private String type;
+    @NotBlank
+    private String type;
 
-  private BigDecimal amount;
+    @NotNull
+    private BigDecimal amount;
 
-  private String mode;
+    private String mode;
 
-  @Column(columnDefinition = "TEXT")
-  private String notes;
+    @Column(columnDefinition = "TEXT")
+    private String notes;
 }

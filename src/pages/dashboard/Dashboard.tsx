@@ -36,7 +36,7 @@ const Dashboard = () => {
 
   const [dailyForm, setDailyForm] = useState({
     date: "",
-    type: "expense",
+    type: "Expense",
     item: "",
     amount: "",
     notes: "",
@@ -161,7 +161,7 @@ const Dashboard = () => {
       setAdminMessage("Daily transaction added successfully.");
       setDailyForm({
         date: "",
-        type: "expense",
+        type: "Expense",
         item: "",
         amount: "",
         notes: "",
@@ -587,8 +587,8 @@ const Dashboard = () => {
                         setDailyForm({ ...dailyForm, type: e.target.value })
                       }
                     >
-                      <option value="expense">Expense</option>
-                      <option value="income">Income</option>
+                      <option value="Expense">Expense</option>
+                      <option value="Income">Income</option>
                     </select>
                   </div>
                   <div className="col-12 col-lg">

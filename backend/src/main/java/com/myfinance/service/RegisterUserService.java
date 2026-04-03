@@ -2,58 +2,65 @@ package com.myfinance.service;
 
 import com.myfinance.model.RegisterUser;
 import com.myfinance.repository.RegisterUserDao;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class RegisterUserService {
 
-  @Autowired
-  private RegisterUserDao registerUserDao;
+    private final RegisterUserDao registerUserDao;
 
-  public RegisterUser registerUser(RegisterUser user) {
-    // Check if username or email already exists
-    if (registerUserDao.existsByUsername(user.getUsername())) {
-      throw new RuntimeException("Username already exists");
+    public RegisterUser registerUser(RegisterUser user) {
+
+        log.info("Registering user: {}", user.getUsername());
+
+        // Check if username or email already exists
+        if (registerUserDao.existsByUsername(user.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+        if (registerUserDao.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        return registerUserDao.save(user);
     }
-    if (registerUserDao.existsByEmail(user.getEmail())) {
-      throw new RuntimeException("Email already exists");
+
+    public Optional<RegisterUser> findByEmail(String email) {
+        return registerUserDao.findByEmail(email);
     }
 
-    return registerUserDao.save(user);
-  }
+    public List<RegisterUser> getAllUsers() {
+        return registerUserDao.findAll();
+    }
 
-  public Optional<RegisterUser> findByEmail(String email) {
-    return registerUserDao.findByEmail(email);
-  }
+    public Optional<RegisterUser> getUserById(Long id) {
+        return registerUserDao.findById(id);
+    }
 
-  public List<RegisterUser> getAllUsers() {
-    return registerUserDao.findAll();
-  }
+    public RegisterUser updateUser(RegisterUser user) {
+        return registerUserDao.save(user);
+    }
 
-  public Optional<RegisterUser> getUserById(Long id) {
-    return registerUserDao.findById(id);
-  }
+    public void deleteUser(Long id) {
+        registerUserDao.deleteById(id);
+    }
 
-  public RegisterUser updateUser(RegisterUser user) {
-    return registerUserDao.save(user);
-  }
+    public boolean authenticate(String username, String password) {
+        log.info("Authenticating user: {}", username);
 
-  public void deleteUser(Long id) {
-    registerUserDao.deleteById(id);
-  }
+        return registerUserDao
+                .findByUsername(username)
+                .filter(user -> user.getPassword().equals(password))
+                .isPresent();
+    }
 
-  public boolean authenticate(String username, String password) {
-    return registerUserDao
-        .findByUsername(username)
-        .filter(user -> user.getPassword().equals(password))
-        .isPresent();
-  }
-
-  public boolean isUserRegistered(String phoneOrEmail) {
-    return registerUserDao.existsByEmail(phoneOrEmail.toLowerCase()) || registerUserDao.existsByPhone(phoneOrEmail);
-  }
+    public boolean isUserRegistered(String phoneOrEmail) {
+        return registerUserDao.existsByEmail(phoneOrEmail.toLowerCase()) || registerUserDao.existsByPhone(phoneOrEmail);
+    }
 }

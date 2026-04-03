@@ -1,107 +1,128 @@
 package com.myfinance.controller;
 
-import com.myfinance.model.LoginRequest;
+import com.myfinance.common.ApiResponse;
 import com.myfinance.model.ForgotPasswordRequest;
+import com.myfinance.model.LoginRequest;
 import com.myfinance.model.RegisterUser;
 import com.myfinance.service.RegisterUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class RegisterUserController {
 
-  @Autowired
-  private RegisterUserService registerUserService;
+    private final RegisterUserService registerUserService;
 
-  @PostMapping("/register")
-  public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUser user) {
-    try {
-      RegisterUser savedUser = registerUserService.registerUser(user);
-      return ResponseEntity.ok(savedUser);
-    } catch (RuntimeException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
-  }
 
-  @PostMapping("/login")
-  public ResponseEntity<?> login(
-      @Valid @RequestBody LoginRequest request,
-      BindingResult result) {
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse<RegisterUser>> registerUser(
+            @Valid @RequestBody RegisterUser user) {
 
-    if (result.hasErrors()) {
-      return ResponseEntity
-          .badRequest()
-          .body(result.getAllErrors().get(0).getDefaultMessage());
-    }
-    boolean authenticated = registerUserService.authenticate(request.getUsername(), request.getPassword());
-    if (authenticated) {
-      return ResponseEntity.ok().build();
-    }
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
-  }
+        log.info("Registering user: {}", user.getUsername());
 
-  @PostMapping("/forgot-password")
-  public ResponseEntity<?> forgotPassword(
-      @Valid @RequestBody ForgotPasswordRequest request,
-      BindingResult result) {
+        RegisterUser savedUser = registerUserService.registerUser(user);
 
-    if (result.hasErrors()) {
-      return ResponseEntity
-          .badRequest()
-          .body(result.getAllErrors().get(0).getDefaultMessage());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.created(savedUser));
     }
 
-    boolean accountExists = registerUserService
-        .isUserRegistered(request.getEmailOrPhone());
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<String>> login(
+            @Valid @RequestBody LoginRequest request) {
 
-    if (accountExists) {
-      return ResponseEntity.ok("Password sent successfully.");
+        log.info("Login attempt for user: {}", request.getUsername());
+
+        boolean authenticated =
+                registerUserService.authenticate(
+                        request.getUsername(),
+                        request.getPassword()
+                );
+
+        if (!authenticated) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(401, "Invalid username or password"));
+        }
+
+        return ResponseEntity.ok(ApiResponse.success("Login successful"));
     }
 
-    return ResponseEntity
-        .status(HttpStatus.NOT_FOUND)
-        .body("No account found with provided email or phone.");
-  }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<String>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest request) {
 
-  @GetMapping
-  public ResponseEntity<List<RegisterUser>> getAllUsers() {
-    List<RegisterUser> users = registerUserService.getAllUsers();
-    return ResponseEntity.ok(users);
-  }
+        log.info("Forgot password request for: {}", request.getEmailOrPhone());
 
-  @GetMapping("/{id}")
-  public ResponseEntity<?> getUserById(@PathVariable Long id) {
-    return registerUserService.getUserById(id)
-        .map(user -> ResponseEntity.ok(user))
-        .orElse(ResponseEntity.notFound().build());
-  }
+        boolean accountExists =
+                registerUserService.isUserRegistered(request.getEmailOrPhone());
 
-  @PutMapping("/{id}")
-  public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody RegisterUser user) {
-    return registerUserService.getUserById(id)
-        .map(existingUser -> {
-          user.setId(id);
-          RegisterUser updatedUser = registerUserService.updateUser(user);
-          return ResponseEntity.ok(updatedUser);
-        })
-        .orElse(ResponseEntity.notFound().build());
-  }
+        if (!accountExists) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(404, "No account found"));
+        }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-    if (registerUserService.getUserById(id).isPresent()) {
-      registerUserService.deleteUser(id);
-      return ResponseEntity.ok().build();
-    } else {
-      return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(
+                ApiResponse.success("Password sent successfully")
+        );
     }
-  }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<RegisterUser>>> getAllUsers() {
+
+        List<RegisterUser> users = registerUserService.getAllUsers();
+
+        return ResponseEntity.ok(ApiResponse.success(users));
+    }
+
+    // ✅ Get By ID
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<RegisterUser>> getUserById(
+            @PathVariable Long id) {
+
+        return registerUserService.getUserById(id)
+                .map(user -> ResponseEntity.ok(ApiResponse.success(user)))
+                .orElse(ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(ApiResponse.error(404, "User not found")));
+    }
+
+    // ✅ Update
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<RegisterUser>> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody RegisterUser user) {
+
+        return registerUserService.getUserById(id)
+                .map(existing -> {
+                    user.setId(id);
+                    RegisterUser updated = registerUserService.updateUser(user);
+                    return ResponseEntity.ok(ApiResponse.success(updated));
+                })
+                .orElse(ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(ApiResponse.error(404, "User not found")));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        return registerUserService.getUserById(id)
+                .map(user -> {
+                    registerUserService.deleteUser(id);
+                    return ResponseEntity.noContent().<Void>build();
+                })
+                .orElseGet(() -> ResponseEntity.notFound().<Void>build());
+    }
 }
+

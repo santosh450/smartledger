@@ -2,27 +2,32 @@ package com.myfinance.service;
 
 import com.myfinance.model.DebtCredit;
 import com.myfinance.repository.DebtCreditRepository;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class DebtCreditService {
 
-  @Autowired
-  private DebtCreditRepository debtCreditRepository;
+    private final DebtCreditRepository debtCreditRepository;
 
-  public List<DebtCredit> getTransactions() {
-    // return debtCreditRepository.findAll(Sort.by(Sort.Direction.DESC, "date"));
-    return debtCreditRepository.findAll();
-  }
+    public List<DebtCredit> getTransactions() {
+        return debtCreditRepository.findAll(Sort.by(Sort.Direction.DESC, "date"));
 
-  public String addTransaction(DebtCredit transaction) {
-    debtCreditRepository.save(transaction);
-    return "Transaction added successfully";
-  }
+    }
+
+    public DebtCredit addTransaction(DebtCredit transaction) {
+        log.info("Adding transaction: {}", transaction);
+
+        if (transaction.getPerson() == null || transaction.getPerson().isBlank()) {
+            throw new IllegalArgumentException("Person name is required");
+        }
+
+        return debtCreditRepository.save(transaction);
+    }
 }

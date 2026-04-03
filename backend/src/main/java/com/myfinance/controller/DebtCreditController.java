@@ -1,33 +1,46 @@
 package com.myfinance.controller;
 
+import com.myfinance.common.ApiResponse;
 import com.myfinance.model.DebtCredit;
 import com.myfinance.service.DebtCreditService;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Slf4j
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/debt-credit")
 public class DebtCreditController {
 
-  @Autowired
-  private DebtCreditService debtCreditService;
+    private final DebtCreditService debtCreditService;
 
-  @GetMapping
-  public List<DebtCredit> getTransactions() {
-    return debtCreditService.getTransactions();
-  }
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<DebtCredit>>> getTransactions() {
 
-  @PostMapping
-  public String addTransaction(@RequestBody DebtCredit transaction) {
-    return debtCreditService.addTransaction(transaction);
-  }
+        log.info("Fetching all debt-credit transactions");
+
+        List<DebtCredit> data = debtCreditService.getTransactions();
+
+        return ResponseEntity.ok(ApiResponse.success(data));
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<DebtCredit>> addTransaction(
+            @Valid @RequestBody DebtCredit transaction) {
+
+        log.info("Adding transaction: {}", transaction);
+
+        DebtCredit result = debtCreditService.addTransaction(transaction);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.created(result));
+    }
 }
