@@ -9,10 +9,10 @@
         <relativePath/>
     </parent>
     <groupId>com.myfinance</groupId>
-    <artifactId>myfinance-backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>myfinance-backend</name>
-    <description>Backend for MyFinance</description>
+    <artifactId>smart-ledger-backend</artifactId>
+    <version>1.0.0</version>
+    <name>smart-ledger-backend</name>
+    <description>Backend for Smart Ledger - Personal Finance Tracker</description>
     <properties>
         <java.version>17</java.version>
     </properties>
