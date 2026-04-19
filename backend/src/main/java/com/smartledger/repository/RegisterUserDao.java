@@ -1,6 +1,6 @@
-package com.myfinance.repository;
+package com.smartledger.repository;
 
-import com.myfinance.model.RegisterUser;
+import com.smartledger.model.RegisterUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

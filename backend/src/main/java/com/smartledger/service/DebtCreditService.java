@@ -1,7 +1,7 @@
-package com.myfinance.service;
+package com.smartledger.service;
 
-import com.myfinance.model.DebtCredit;
-import com.myfinance.repository.DebtCreditRepository;
+import com.smartledger.model.DebtCredit;
+import com.smartledger.repository.DebtCreditRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;

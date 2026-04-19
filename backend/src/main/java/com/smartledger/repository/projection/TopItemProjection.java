@@ -1,4 +1,4 @@
-package com.myfinance.repository.projection;
+package com.smartledger.repository.projection;
 
 public interface TopItemProjection {
     String getItem();

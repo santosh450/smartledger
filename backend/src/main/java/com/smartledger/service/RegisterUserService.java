@@ -1,7 +1,7 @@
-package com.myfinance.service;
+package com.smartledger.service;
 
-import com.myfinance.model.RegisterUser;
-import com.myfinance.repository.RegisterUserDao;
+import com.smartledger.model.RegisterUser;
+import com.smartledger.repository.RegisterUserDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

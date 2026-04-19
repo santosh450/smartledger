@@ -1,6 +1,6 @@
-package com.myfinance.repository;
+package com.smartledger.repository;
 
-import com.myfinance.model.DebtCredit;
+import com.smartledger.model.DebtCredit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

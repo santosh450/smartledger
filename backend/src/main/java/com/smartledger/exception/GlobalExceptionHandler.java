@@ -1,6 +1,6 @@
-package com.myfinance.exception;
+package com.smartledger.exception;
 
-import com.myfinance.common.ApiResponse;
+import com.smartledger.common.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

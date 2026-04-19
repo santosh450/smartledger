@@ -1,8 +1,8 @@
-package com.myfinance.repository;
+package com.smartledger.repository;
 
-import com.myfinance.model.Transaction;
-import com.myfinance.repository.projection.MonthlySummaryProjection;
-import com.myfinance.repository.projection.TopItemProjection;
+import com.smartledger.model.Transaction;
+import com.smartledger.repository.projection.MonthlySummaryProjection;
+import com.smartledger.repository.projection.TopItemProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

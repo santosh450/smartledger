@@ -1,4 +1,4 @@
-package com.myfinance.model;
+package com.smartledger.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;

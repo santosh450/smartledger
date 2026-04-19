@@ -1,8 +1,8 @@
-package com.myfinance.controller;
+package com.smartledger.controller;
 
-import com.myfinance.common.ApiResponse;
-import com.myfinance.model.DebtCredit;
-import com.myfinance.service.DebtCreditService;
+import com.smartledger.common.ApiResponse;
+import com.smartledger.model.DebtCredit;
+import com.smartledger.service.DebtCreditService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

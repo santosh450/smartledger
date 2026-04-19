@@ -1,4 +1,4 @@
-package com.myfinance.common;
+package com.smartledger.common;
 
 import lombok.Builder;
 import lombok.Data;

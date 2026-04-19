@@ -1,7 +1,7 @@
-package com.myfinance.dto;
+package com.smartledger.dto;
 
-import com.myfinance.repository.projection.MonthlySummaryProjection;
-import com.myfinance.repository.projection.TopItemProjection;
+import com.smartledger.repository.projection.MonthlySummaryProjection;
+import com.smartledger.repository.projection.TopItemProjection;
 import lombok.Getter;
 
 import java.util.List;

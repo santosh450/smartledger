@@ -1,4 +1,4 @@
-package com.myfinance.model;
+package com.smartledger.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -14,26 +14,32 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "debt_credit")
-public class DebtCredit {
+@Table(name = "transactions")
+public class Transaction {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "date")
     private LocalDate date;
 
-    @NotBlank
-    private String person;
-
+    @Column(name = "type", nullable = false)
     @NotBlank
     private String type;
 
+    @Column(name = "amount", nullable = false)
     @NotNull
     private BigDecimal amount;
 
+    @Column(name = "item")
+    private String item;
+
+    @Column(name = "mode")
     private String mode;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "notes")
     private String notes;
+    
 }

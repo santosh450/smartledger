@@ -8,7 +8,7 @@
         <version>3.2.0</version>
         <relativePath/>
     </parent>
-    <groupId>com.myfinance</groupId>
+    <groupId>com.smartledger</groupId>
     <artifactId>smart-ledger-backend</artifactId>
     <version>1.0.0</version>
     <name>smart-ledger-backend</name>

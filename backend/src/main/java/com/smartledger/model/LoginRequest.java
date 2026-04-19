@@ -1,4 +1,4 @@
-package com.myfinance.model;
+package com.smartledger.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

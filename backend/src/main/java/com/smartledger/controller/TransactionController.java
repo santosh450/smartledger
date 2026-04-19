@@ -1,11 +1,11 @@
-package com.myfinance.controller;
+package com.smartledger.controller;
 
-import com.myfinance.common.ApiResponse;
-import com.myfinance.dto.DashboardResponse;
-import com.myfinance.model.Transaction;
-import com.myfinance.repository.projection.MonthlySummaryProjection;
-import com.myfinance.repository.projection.TopItemProjection;
-import com.myfinance.service.TransactionService;
+import com.smartledger.common.ApiResponse;
+import com.smartledger.dto.DashboardResponse;
+import com.smartledger.model.Transaction;
+import com.smartledger.repository.projection.MonthlySummaryProjection;
+import com.smartledger.repository.projection.TopItemProjection;
+import com.smartledger.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

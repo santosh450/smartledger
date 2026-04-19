@@ -1,10 +1,10 @@
-package com.myfinance.controller;
+package com.smartledger.controller;
 
-import com.myfinance.common.ApiResponse;
-import com.myfinance.model.ForgotPasswordRequest;
-import com.myfinance.model.LoginRequest;
-import com.myfinance.model.RegisterUser;
-import com.myfinance.service.RegisterUserService;
+import com.smartledger.common.ApiResponse;
+import com.smartledger.model.ForgotPasswordRequest;
+import com.smartledger.model.LoginRequest;
+import com.smartledger.model.RegisterUser;
+import com.smartledger.service.RegisterUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

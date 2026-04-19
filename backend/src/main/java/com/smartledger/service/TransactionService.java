@@ -1,10 +1,10 @@
-package com.myfinance.service;
+package com.smartledger.service;
 
-import com.myfinance.dto.DashboardResponse;
-import com.myfinance.model.Transaction;
-import com.myfinance.repository.TransactionRepository;
-import com.myfinance.repository.projection.MonthlySummaryProjection;
-import com.myfinance.repository.projection.TopItemProjection;
+import com.smartledger.dto.DashboardResponse;
+import com.smartledger.model.Transaction;
+import com.smartledger.repository.TransactionRepository;
+import com.smartledger.repository.projection.MonthlySummaryProjection;
+import com.smartledger.repository.projection.TopItemProjection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
