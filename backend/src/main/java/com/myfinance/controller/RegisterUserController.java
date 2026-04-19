@@ -21,108 +21,102 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RegisterUserController {
 
-    private final RegisterUserService registerUserService;
+        private final RegisterUserService registerUserService;
 
+        @PostMapping("/register")
+        public ResponseEntity<ApiResponse<RegisterUser>> registerUser(
+                        @Valid @RequestBody RegisterUser user) {
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponse<RegisterUser>> registerUser(
-            @Valid @RequestBody RegisterUser user) {
+                log.info("Registering user: {}", user.getUsername());
 
-        log.info("Registering user: {}", user.getUsername());
+                RegisterUser savedUser = registerUserService.registerUser(user);
 
-        RegisterUser savedUser = registerUserService.registerUser(user);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(ApiResponse.created(savedUser));
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(
-            @Valid @RequestBody LoginRequest request) {
-
-        log.info("Login attempt for user: {}", request.getUsername());
-
-        boolean authenticated =
-                registerUserService.authenticate(
-                        request.getUsername(),
-                        request.getPassword()
-                );
-
-        if (!authenticated) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error(401, "Invalid username or password"));
+                return ResponseEntity
+                                .status(HttpStatus.CREATED)
+                                .body(ApiResponse.created(savedUser));
         }
 
-        return ResponseEntity.ok(ApiResponse.success("Login successful"));
-    }
+        @PostMapping("/login")
+        public ResponseEntity<ApiResponse<String>> login(
+                        @Valid @RequestBody LoginRequest request) {
 
-    @PostMapping("/forgot-password")
-    public ResponseEntity<ApiResponse<String>> forgotPassword(
-            @Valid @RequestBody ForgotPasswordRequest request) {
+                log.info("Login attempt for user: {}", request.getUsername());
 
-        log.info("Forgot password request for: {}", request.getEmailOrPhone());
+                boolean authenticated = registerUserService.authenticate(
+                                request.getUsername(),
+                                request.getPassword());
 
-        boolean accountExists =
-                registerUserService.isUserRegistered(request.getEmailOrPhone());
+                if (!authenticated) {
+                        return ResponseEntity
+                                        .status(HttpStatus.UNAUTHORIZED)
+                                        .body(ApiResponse.error(401, "Invalid username or password"));
+                }
 
-        if (!accountExists) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error(404, "No account found"));
+                return ResponseEntity.ok(ApiResponse.success("Login successful"));
         }
 
-        return ResponseEntity.ok(
-                ApiResponse.success("Password sent successfully")
-        );
-    }
+        @PostMapping("/forgot-password")
+        public ResponseEntity<ApiResponse<String>> forgotPassword(
+                        @Valid @RequestBody ForgotPasswordRequest request) {
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<RegisterUser>>> getAllUsers() {
+                log.info("Forgot password request for: {}", request.getEmailOrPhone());
 
-        List<RegisterUser> users = registerUserService.getAllUsers();
+                boolean accountExists = registerUserService.isUserRegistered(request.getEmailOrPhone());
 
-        return ResponseEntity.ok(ApiResponse.success(users));
-    }
+                if (!accountExists) {
+                        return ResponseEntity
+                                        .status(HttpStatus.NOT_FOUND)
+                                        .body(ApiResponse.error(404, "No account found"));
+                }
 
-    // ✅ Get By ID
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<RegisterUser>> getUserById(
-            @PathVariable Long id) {
+                return ResponseEntity.ok(
+                                ApiResponse.success("Password sent successfully"));
+        }
 
-        return registerUserService.getUserById(id)
-                .map(user -> ResponseEntity.ok(ApiResponse.success(user)))
-                .orElse(ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(ApiResponse.error(404, "User not found")));
-    }
+        @GetMapping
+        public ResponseEntity<ApiResponse<List<RegisterUser>>> getAllUsers() {
 
-    // ✅ Update
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<RegisterUser>> updateUser(
-            @PathVariable Long id,
-            @Valid @RequestBody RegisterUser user) {
+                List<RegisterUser> users = registerUserService.getAllUsers();
 
-        return registerUserService.getUserById(id)
-                .map(existing -> {
-                    user.setId(id);
-                    RegisterUser updated = registerUserService.updateUser(user);
-                    return ResponseEntity.ok(ApiResponse.success(updated));
-                })
-                .orElse(ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(ApiResponse.error(404, "User not found")));
-    }
+                return ResponseEntity.ok(ApiResponse.success(users));
+        }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        return registerUserService.getUserById(id)
-                .map(user -> {
-                    registerUserService.deleteUser(id);
-                    return ResponseEntity.noContent().<Void>build();
-                })
-                .orElseGet(() -> ResponseEntity.notFound().<Void>build());
-    }
+        // ✅ Get By ID
+        @GetMapping("/{id}")
+        public ResponseEntity<ApiResponse<RegisterUser>> getUserById(
+                        @PathVariable Long id) {
+
+                return registerUserService.getUserById(id)
+                                .map(user -> ResponseEntity.ok(ApiResponse.success(user)))
+                                .orElse(ResponseEntity
+                                                .status(HttpStatus.NOT_FOUND)
+                                                .body(ApiResponse.error(404, "User not found")));
+        }
+
+        // ✅ Update
+        @PutMapping("/{id}")
+        public ResponseEntity<ApiResponse<RegisterUser>> updateUser(
+                        @PathVariable Long id,
+                        @Valid @RequestBody RegisterUser user) {
+
+                return registerUserService.getUserById(id)
+                                .map(existing -> {
+                                        user.setId(id);
+                                        RegisterUser updated = registerUserService.updateUser(user);
+                                        return ResponseEntity.ok(ApiResponse.success(updated));
+                                })
+                                .orElse(ResponseEntity
+                                                .status(HttpStatus.NOT_FOUND)
+                                                .body(ApiResponse.error(404, "User not found")));
+        }
+
+        @DeleteMapping("/{id}")
+        public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+                return registerUserService.getUserById(id)
+                                .map(user -> {
+                                        registerUserService.deleteUser(id);
+                                        return ResponseEntity.noContent().<Void>build();
+                                })
+                                .orElseGet(() -> ResponseEntity.notFound().<Void>build());
+        }
 }
-

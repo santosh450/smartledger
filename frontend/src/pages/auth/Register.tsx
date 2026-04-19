@@ -17,7 +17,7 @@ const Register = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setSuccessMessage(null);
     setErrorMessage(null);
@@ -69,7 +69,9 @@ const Register = () => {
       }, 3000);
     } catch (err) {
       if (err instanceof Error) {
-        setErrorMessage(err.message || "Registration failed. Please try again.");
+        setErrorMessage(
+          err.message || "Registration failed. Please try again.",
+        );
       } else {
         setErrorMessage("Unable to reach server. Please try again.");
       }

@@ -11,7 +11,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setError(null);
 
@@ -31,10 +31,15 @@ const Login = () => {
     <div className="container min-vh-100 d-flex align-items-center justify-content-center">
       <div className="row justify-content-center w-100">
         <div className="col-12 col-md-8 col-lg-6">
-          <div className="card">
-            <div className="card-body">
-              <h2 className="card-title text-start">Here you can Login</h2>
-              <p className="card-title text-start">Let's join us</p>
+          <div className="card border-0 custom-shadow">
+            <div className="card-body p-5">
+              <h5 className="fw-bold text-primary mb-4">Smart Ledger</h5>
+              <h4 className="fw-bold mb-2 text-start">
+                Log in to your account
+              </h4>
+              <p className="text-muted mb-4 text-start">
+                Please enter your details
+              </p>
               <form onSubmit={handleSubmit}>
                 <InputField
                   label="Username"

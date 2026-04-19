@@ -9,7 +9,7 @@ const ForgotPassword = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setSuccessMessage(null);
     setErrorMessage(null);
@@ -25,7 +25,8 @@ const ForgotPassword = () => {
     try {
       const responseText = await userApi.forgotPassword({ emailOrPhone });
       setSuccessMessage(
-        responseText || "If an account exists, password reset details will be sent.",
+        responseText ||
+          "If an account exists, password reset details will be sent.",
       );
     } catch (err) {
       if (err instanceof Error) {

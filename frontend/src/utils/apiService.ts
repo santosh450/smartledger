@@ -1,5 +1,11 @@
 import apiClient from "./apiClient";
 
+export interface ApiResponse<T> {
+  status: number;
+  message: string;
+  data: T;
+}
+
 export interface LoginRequest {
   username: string;
   password: string;
@@ -73,10 +79,10 @@ export const userApi = {
 
 export const transactionApi = {
   getAllTransactions() {
-    return apiClient.get<TransactionDto[]>("/transactions");
+    return apiClient.get<ApiResponse<TransactionDto[]>>("/transactions");
   },
   createTransaction(payload: CreateTransactionRequest) {
-    return apiClient.post<CreateTransactionRequest, TransactionDto>(
+    return apiClient.post<CreateTransactionRequest, ApiResponse<TransactionDto>>(
       "/transactions",
       payload,
     );
@@ -85,11 +91,11 @@ export const transactionApi = {
 
 export const debtCreditApi = {
   getAllDebtCreditRecords() {
-    return apiClient.get<DebtCreditDto[]>("/debt-credit");
+    return apiClient.get<ApiResponse<DebtCreditDto[]>>("/debt-credit");
   },
   createDebtCreditRecord(payload: CreateDebtCreditRequest) {
     console.log("Creating Debt/Credit Record with payload:", payload);
-    return apiClient.post<CreateDebtCreditRequest, DebtCreditDto>(
+    return apiClient.post<CreateDebtCreditRequest, ApiResponse<DebtCreditDto>>(
       "/debt-credit",
       payload,
     );
