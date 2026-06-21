@@ -1,5 +1,3 @@
-import { debtCreditApi, transactionApi } from "../../../utils/apiService";
-
 interface AdminTabProps {
   adminMessage: string | null;
   adminError: string | null;

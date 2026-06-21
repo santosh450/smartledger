@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Card from "../../../components/Card";
 import type { DebtCreditDto } from "../../../utils/apiService";
 
@@ -5,13 +6,45 @@ interface AssetsTabProps {
   debtCredits: DebtCreditDto[];
   debtCreditsLoading: boolean;
   debtCreditsError: string | null;
+  onDeleteDebtCredit: (id: number) => Promise<void>;
+  onUpdateDebtCredit: (record: DebtCreditDto) => Promise<void>;
+  savingDebtCredit: boolean;
 }
 
 const AssetsTab = ({
   debtCredits,
   debtCreditsLoading,
   debtCreditsError,
+  onDeleteDebtCredit,
+  onUpdateDebtCredit,
+  savingDebtCredit,
 }: AssetsTabProps) => {
+  const [editingRecord, setEditingRecord] = useState<DebtCreditDto | null>(
+    null,
+  );
+
+  const startEdit = (record: DebtCreditDto) => {
+    setEditingRecord({ ...record });
+  };
+
+  const cancelEdit = () => {
+    setEditingRecord(null);
+  };
+
+  const updateField = (field: keyof DebtCreditDto, value: string | number) => {
+    if (!editingRecord) return;
+    setEditingRecord({
+      ...editingRecord,
+      [field]: value,
+    });
+  };
+
+  const saveEdit = async () => {
+    if (!editingRecord) return;
+
+    await onUpdateDebtCredit(editingRecord);
+    setEditingRecord(null);
+  };
   const personTotals = Object.values(
     debtCredits.reduce<Record<string, { person: string; amount: number }>>(
       (acc, record) => {
@@ -88,6 +121,7 @@ const AssetsTab = ({
                 <th>Amount</th>
                 <th>Mode</th>
                 <th>Notes</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -114,12 +148,130 @@ const AssetsTab = ({
                 !debtCreditsError &&
                 debtCredits.map((record) => (
                   <tr key={record.id}>
-                    <td>{record.date}</td>
-                    <td>{record.person}</td>
-                    <td>{record.type}</td>
-                    <td>{record.amount}</td>
-                    <td>{record.mode}</td>
-                    <td>{record.notes}</td>
+                    <td>
+                      {editingRecord?.id === record.id ? (
+                        <input
+                          type="date"
+                          className="form-control"
+                          value={editingRecord.date}
+                          onChange={(e) => updateField("date", e.target.value)}
+                        />
+                      ) : (
+                        record.date
+                      )}
+                    </td>
+                    <td>
+                      {editingRecord?.id === record.id ? (
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={editingRecord.person}
+                          onChange={(e) =>
+                            updateField("person", e.target.value)
+                          }
+                        />
+                      ) : (
+                        record.person
+                      )}
+                    </td>
+                    <td>
+                      {editingRecord?.id === record.id ? (
+                        <select
+                          className="form-select"
+                          value={editingRecord.type}
+                          onChange={(e) => updateField("type", e.target.value)}
+                        >
+                          <option value="Taken">Taken</option>
+                          <option value="Given">Given</option>
+                        </select>
+                      ) : (
+                        record.type
+                      )}
+                    </td>
+                    <td>
+                      {editingRecord?.id === record.id ? (
+                        <input
+                          type="number"
+                          className="form-control"
+                          value={editingRecord.amount}
+                          onChange={(e) =>
+                            updateField("amount", Number(e.target.value))
+                          }
+                        />
+                      ) : (
+                        record.amount
+                      )}
+                    </td>
+                    <td>
+                      {editingRecord?.id === record.id ? (
+                        <select
+                          className="form-select"
+                          value={editingRecord.mode}
+                          onChange={(e) => updateField("mode", e.target.value)}
+                        >
+                          <option value="PhonePay">PhonePay</option>
+                          <option value="Cash">Cash</option>
+                          <option value="ICICI">ICICI</option>
+                          <option value="SBI">SBI</option>
+                          <option value="Union">Union</option>
+                        </select>
+                      ) : (
+                        record.mode
+                      )}
+                    </td>
+                    <td>
+                      {editingRecord?.id === record.id ? (
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={editingRecord.notes}
+                          onChange={(e) => updateField("notes", e.target.value)}
+                        />
+                      ) : (
+                        record.notes
+                      )}
+                    </td>
+                    <td>
+                      {editingRecord?.id === record.id ? (
+                        <>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-success me-2"
+                            onClick={saveEdit}
+                            disabled={savingDebtCredit}
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-secondary"
+                            onClick={cancelEdit}
+                            disabled={savingDebtCredit}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-primary me-2"
+                            onClick={() => startEdit(record)}
+                            disabled={savingDebtCredit}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => onDeleteDebtCredit(record.id)}
+                            disabled={savingDebtCredit}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </td>
                   </tr>
                 ))}
             </tbody>

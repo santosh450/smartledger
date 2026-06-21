@@ -28,6 +28,8 @@ const Dashboard = () => {
   const [adminError, setAdminError] = useState<string | null>(null);
   const [savingPersonal, setSavingPersonal] = useState(false);
   const [savingDaily, setSavingDaily] = useState(false);
+  const [savingTransaction, setSavingTransaction] = useState(false);
+  const [savingDebtCredit, setSavingDebtCredit] = useState(false);
 
   const [personalForm, setPersonalForm] = useState({
     date: "",
@@ -183,6 +185,100 @@ const Dashboard = () => {
     }
   };
 
+  const handleDeleteDebtCredit = async (id: number) => {
+    setAdminMessage(null);
+    setAdminError(null);
+    setSavingDebtCredit(true);
+
+    try {
+      await debtCreditApi.deleteDebtCreditRecord(id);
+      setAdminMessage("Debt/credit record deleted successfully.");
+      await fetchDebtCreditRecords();
+    } catch (err) {
+      if (err instanceof Error) {
+        setAdminError(err.message || "Failed to delete debt/credit record.");
+      } else {
+        setAdminError("Failed to delete debt/credit record.");
+      }
+    } finally {
+      setSavingDebtCredit(false);
+    }
+  };
+
+  const handleUpdateDebtCredit = async (record: DebtCreditDto) => {
+    setAdminMessage(null);
+    setAdminError(null);
+    setSavingDebtCredit(true);
+
+    try {
+      await debtCreditApi.updateDebtCreditRecord(record.id, {
+        date: record.date,
+        person: record.person,
+        type: record.type,
+        amount: record.amount,
+        mode: record.mode,
+        notes: record.notes,
+      });
+      setAdminMessage("Debt/credit record updated successfully.");
+      await fetchDebtCreditRecords();
+    } catch (err) {
+      if (err instanceof Error) {
+        setAdminError(err.message || "Failed to update debt/credit record.");
+      } else {
+        setAdminError("Failed to update debt/credit record.");
+      }
+    } finally {
+      setSavingDebtCredit(false);
+    }
+  };
+
+  const handleDeleteTransaction = async (id: number) => {
+    setAdminMessage(null);
+    setAdminError(null);
+    setSavingTransaction(true);
+
+    try {
+      await transactionApi.deleteTransaction(id);
+      setAdminMessage("Transaction deleted successfully.");
+      await fetchTransactions();
+    } catch (err) {
+      if (err instanceof Error) {
+        setAdminError(err.message || "Failed to delete transaction.");
+      } else {
+        setAdminError("Failed to delete transaction.");
+      }
+    } finally {
+      setSavingTransaction(false);
+    }
+  };
+
+  const handleUpdateTransaction = async (transaction: TransactionDto) => {
+    setAdminMessage(null);
+    setAdminError(null);
+    setSavingTransaction(true);
+
+    try {
+      await transactionApi.updateTransaction(transaction.id, {
+        date: transaction.date,
+        type: transaction.type,
+        amount: transaction.amount,
+        item: transaction.item,
+        mode: transaction.mode,
+        notes: transaction.notes,
+      });
+      setAdminMessage("Transaction updated successfully.");
+      await fetchTransactions();
+    } catch (err) {
+      if (err instanceof Error) {
+        setAdminError(err.message || "Failed to update transaction.");
+      } else {
+        setAdminError("Failed to update transaction.");
+      }
+    } finally {
+      setSavingTransaction(false);
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "transactions":
@@ -191,6 +287,9 @@ const Dashboard = () => {
             transactions={transactions}
             transactionsLoading={transactionsLoading}
             transactionsError={transactionsError}
+            onDeleteTransaction={handleDeleteTransaction}
+            onUpdateTransaction={handleUpdateTransaction}
+            savingTransaction={savingTransaction}
           />
         );
       case "assets":
@@ -199,6 +298,9 @@ const Dashboard = () => {
             debtCredits={debtCredits}
             debtCreditsLoading={debtCreditsLoading}
             debtCreditsError={debtCreditsError}
+            onDeleteDebtCredit={handleDeleteDebtCredit}
+            onUpdateDebtCredit={handleUpdateDebtCredit}
+            savingDebtCredit={savingDebtCredit}
           />
         );
       case "mutual-funds":

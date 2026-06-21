@@ -43,6 +43,8 @@ export interface CreateTransactionRequest {
   notes: string;
 }
 
+export type UpdateTransactionRequest = CreateTransactionRequest;
+
 export interface DebtCreditDto {
   id: number;
   date: string;
@@ -61,6 +63,8 @@ export interface CreateDebtCreditRequest {
   mode: string;
   notes: string;
 }
+
+export type UpdateDebtCreditRequest = CreateDebtCreditRequest;
 
 export const userApi = {
   login(payload: LoginRequest) {
@@ -87,6 +91,15 @@ export const transactionApi = {
       payload,
     );
   },
+  updateTransaction(id: number, payload: UpdateTransactionRequest) {
+    return apiClient.put<UpdateTransactionRequest, ApiResponse<TransactionDto>>(
+      `/transactions/${id}`,
+      payload,
+    );
+  },
+  deleteTransaction(id: number) {
+    return apiClient.delete<ApiResponse<void>>(`/transactions/${id}`);
+  },
 };
 
 export const debtCreditApi = {
@@ -99,6 +112,15 @@ export const debtCreditApi = {
       "/debt-credit",
       payload,
     );
+  },
+  updateDebtCreditRecord(id: number, payload: UpdateDebtCreditRequest) {
+    return apiClient.put<UpdateDebtCreditRequest, ApiResponse<DebtCreditDto>>(
+      `/debt-credit/${id}`,
+      payload,
+    );
+  },
+  deleteDebtCreditRecord(id: number) {
+    return apiClient.delete<ApiResponse<void>>(`/debt-credit/${id}`);
   },
 };
 

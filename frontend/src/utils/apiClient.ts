@@ -69,6 +69,65 @@ export const apiClient = {
 
     return responseText as TResponse;
   },
+
+  async put<TRequest, TResponse = string>(
+    endpoint: string,
+    data: TRequest,
+  ): Promise<TResponse> {
+    const response = await fetchWithTimeout(`${BASE_API_URL}${endpoint}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      let errorMessage = "Request failed";
+      try {
+        const errorJson = JSON.parse(responseText);
+        errorMessage = errorJson.message || errorJson || "Request failed";
+      } catch {
+        errorMessage = responseText || "Request failed";
+      }
+      throw new Error(errorMessage);
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      const json = JSON.parse(responseText);
+      return (json.data !== undefined ? json.data : json) as TResponse;
+    }
+
+    return responseText as TResponse;
+  },
+
+  async delete<TResponse = string>(endpoint: string): Promise<TResponse> {
+    const response = await fetchWithTimeout(`${BASE_API_URL}${endpoint}`, {
+      method: "DELETE",
+    });
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      let errorMessage = "Request failed";
+      try {
+        const errorJson = JSON.parse(responseText);
+        errorMessage = errorJson.message || errorJson || "Request failed";
+      } catch {
+        errorMessage = responseText || "Request failed";
+      }
+      throw new Error(errorMessage);
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      const json = JSON.parse(responseText);
+      return (json.data !== undefined ? json.data : json) as TResponse;
+    }
+
+    return responseText as TResponse;
+  },
 };
 
 export default apiClient;
