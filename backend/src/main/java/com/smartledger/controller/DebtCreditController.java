@@ -43,4 +43,42 @@ public class DebtCreditController {
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.created(result));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<DebtCredit>> getTransactionById(
+            @PathVariable Long id) {
+
+        DebtCredit transaction = debtCreditService.getTransactionById(id);
+
+        return ResponseEntity.ok(ApiResponse.success(transaction));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<DebtCredit>> updateTransaction(
+            @PathVariable Long id,
+            @Valid @RequestBody DebtCredit transaction) {
+
+        DebtCredit updated = debtCreditService.updateTransaction(id, transaction);
+
+        return ResponseEntity.ok(ApiResponse.success(updated));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteTransaction(
+            @PathVariable Long id) {
+
+        debtCreditService.deleteTransaction(id);
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<DebtCredit>> patchTransaction(
+            @PathVariable Long id,
+            @RequestBody DebtCredit transaction) {
+
+        DebtCredit updated = debtCreditService.patchTransaction(id, transaction);
+
+        return ResponseEntity.ok(ApiResponse.success(updated));
+    }
 }

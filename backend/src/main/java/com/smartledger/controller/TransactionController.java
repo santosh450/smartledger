@@ -24,7 +24,6 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
-
     @GetMapping
     public ResponseEntity<ApiResponse<List<Transaction>>> getTransactions(
             @RequestParam(required = false) Integer year,
@@ -59,8 +58,7 @@ public class TransactionController {
             @RequestParam int month) {
 
         return ResponseEntity.ok(
-                ApiResponse.success(transactionService.getMonthlySummary(year, month))
-        );
+                ApiResponse.success(transactionService.getMonthlySummary(year, month)));
     }
 
     @GetMapping("/dashboard")
@@ -71,8 +69,7 @@ public class TransactionController {
         log.info("Fetching dashboard for year={}, month={}", year, month);
 
         return ResponseEntity.ok(
-                ApiResponse.success(transactionService.getDashboardData(year, month))
-        );
+                ApiResponse.success(transactionService.getDashboardData(year, month)));
     }
 
     @PostMapping
@@ -87,5 +84,51 @@ public class TransactionController {
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.created(saved));
     }
-    
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<Transaction>> getTransactionById(
+            @PathVariable Long id) {
+
+        log.info("Fetching transaction with id={}", id);
+
+        Transaction transaction = transactionService.getTransactionById(id);
+
+        return ResponseEntity.ok(ApiResponse.success(transaction));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Transaction>> updateTransaction(
+            @PathVariable Long id,
+            @Valid @RequestBody Transaction transaction) {
+
+        log.info("Updating transaction with id={}", id);
+
+        Transaction updated = transactionService.updateTransaction(id, transaction);
+
+        return ResponseEntity.ok(ApiResponse.success(updated));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<Transaction>> patchTransaction(
+            @PathVariable Long id,
+            @RequestBody Transaction transaction) {
+
+        log.info("Partially updating transaction with id={}", id);
+
+        Transaction updated = transactionService.patchTransaction(id, transaction);
+
+        return ResponseEntity.ok(ApiResponse.success(updated));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteTransaction(
+            @PathVariable Long id) {
+
+        log.info("Deleting transaction with id={}", id);
+
+        transactionService.deleteTransaction(id);
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
 }
